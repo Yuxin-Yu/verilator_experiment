@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 vluint64_t main_time = 0;  //initial 仿真时间
- 
+vluint64_t cycle = 10;  //时钟周期
 Vlight *light = new Vlight("light"); //调用Vlight.h里面的IO struct
  VerilatedVcdC* tfp = new VerilatedVcdC; //导出vcd波形需要加此语句
 
@@ -17,12 +17,12 @@ void single_cycle(){
     light->clk = 1;
     light->eval();
     tfp->dump(main_time); //dump wave
-    main_time++; //推动仿真时间
+    main_time += cycle/2; //推动仿真时间
 
     light->clk = 0; 
     light->eval();
     tfp->dump(main_time); //dump wave
-    main_time++; //推动仿真时间
+    main_time += cycle/2; //推动仿真时间
 }
 
 void reset(int n){
@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     light->trace(tfp, 0);   
     tfp->open("wave.vcd"); //打开vcd
     reset(10);
-    while (sc_time_stamp() < 500 && !Verilated::gotFinish()) { //控制仿真时间
+    while (sc_time_stamp() < 5000 && !Verilated::gotFinish()) { //控制仿真时间
         single_cycle();
 		printf("led = %d \n",light->led);
     }
