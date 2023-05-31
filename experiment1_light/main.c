@@ -14,15 +14,11 @@ double sc_time_stamp()
 }
 
 void single_cycle(){
-    light->clk = 1;
+    light->clk ^= 1;
     light->eval();
     tfp->dump(main_time); //dump wave
     main_time += cycle/2; //推动仿真时间
-
-    light->clk = 0; 
-    light->eval();
-    tfp->dump(main_time); //dump wave
-    main_time += cycle/2; //推动仿真时间
+    
 }
 
 void reset(int n){
