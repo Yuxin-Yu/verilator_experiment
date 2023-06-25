@@ -20,17 +20,27 @@ int main(int argc, char** argv, char** env) {
     dut->trace(m_trace, 5);
     m_trace->open("waveform.vcd");
 
+    int a,b,invalid;
     while (sim_time < MAX_SIM_TIME) {// 循环执行仿真
         dut->clk ^= 1;// 取反时钟信号
-        int a = rand() % 64; // 生成随机数 a
-        int b = rand() % 64; // 生成随机数 b
-        dut->a_in = a;
-        dut->b_in = b;
-        dut->op_in = rand() % 3;
-        dut->in_valid = rand() % 2;
+
+        if(dut->clk == 0){
+            a = rand() % 32;// 生成随机数 a
+            b = rand() % 32;// 生成随机数 b
+            dut->a_in = a;
+            dut->b_in = b;
+            dut->op_in = rand() % 3;
+            invalid = rand() % 2;
+            dut->in_valid = invalid;
+        }
+
         //调用eval(), 计算 ALU 模块中的所有信号值
         dut->eval();
-        printf("a = %d, b = %d, out = %d out_valid = %d\n", a, b, dut->out,dut->out_valid);
+
+        if(dut->clk == 0 && invalid == 1){
+            printf("sim_time = %ld,a = %d, b = %d, out = %d out_valid = %d\n",sim_time, a, b, dut->out,dut->out_valid);
+        }
+        
         //将所有跟踪的信号值写入波形转储文件
         m_trace->dump(sim_time);
         sim_time++; // 模拟时钟边沿数加1

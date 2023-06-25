@@ -2,7 +2,7 @@ default: compile
 TOP ?= alu
 
 obj_dir/V$(TOP).mk:
-	verilator -Wno-fatal $(TOP).sv main.cpp --cc --exe --trace --top-module $(TOP)
+	verilator -Wall $(TOP).sv main.cpp --cc --exe --trace --top-module $(TOP)
 
 compile: obj_dir/V$(TOP).mk
 	make -C obj_dir -f V$(TOP).mk V$(TOP)  
